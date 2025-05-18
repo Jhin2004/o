@@ -1,0 +1,30 @@
+name: Build IslaAndroid APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v3
+
+      - name: Instalar Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Dar permisos a gradlew
+        run: chmod +x IslaAndroidFixedPrepared/gradlew
+
+      - name: Compilar el APK
+        run: cd IslaAndroidFixedPrepared && ./gradlew assembleDebug
+
+      - name: Subir APK como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: IslaAndroid-APK
+          path: IslaAndroidFixedPrepared/app/build/outputs/apk/debug/app-debug.apk
